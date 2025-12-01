@@ -1,0 +1,55 @@
+spring:
+  application:
+    name: ussd.wallet.ultimate
+
+  datasource:
+    url: ${JDBC_DATABASE_URL:jdbc:mysql://localhost:3306/dating_db?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false}
+    username: ${JDBC_DATABASE_USERNAME:root}
+    password: ${JDBC_DATABASE_PASSWORD:rootpass}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+    database: mysql
+
+  redis:
+    host: redis
+    port: 6379
+
+  data:
+    cassandra:
+      contact-points: cassandra
+      port: 9042
+      keyspace-name: ussd_keyspace
+
+kafka:
+  bootstrap-servers: kafka:9092
+
+ussd:
+  session-ttl-seconds: 120
+  idempotency-ttl-seconds: 300
+
+twilio:
+  account-sid: ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  auth-token: your_twilio_auth_token
+  from-number: +1234567890
+
+flutterwave:
+  base-url: https://api.flutterwave.com/v3
+  secret-key: FLWSECK-xxxxxxxxxxxxxxxxxxxx
+
+currency:
+  soap-wsdl: http://currency.example/service?wsdl
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
