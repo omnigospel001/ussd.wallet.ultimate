@@ -28,14 +28,14 @@ public class TransactionListener {
     @KafkaListener(topics = "transactions", groupId = "ussd-wallet-group")
     public void onMessage(String payload) {
         try {
-            Transaction t = objectMapper.readValue(payload, Transaction.class);
+            Transaction transaction = objectMapper.readValue(payload, Transaction.class);
             // persist to cassandra
-            cassandraRepo.save(t);
-            log.info("Persisted transaction {} to Cassandra", t.getId());
+            cassandraRepo.save(transaction);
+            log.info("Persisted transaction {} to Cassandra", transaction.getId());
             // if transaction is withdraw and pending -> start saga
-            if ("WITHDRAW".equalsIgnoreCase(t.getType())) {
-                log.info("Starting saga for withdraw tx={}", t.getId());
-                sagaCoordinator.startWithdrawalSaga(t);
+            if ("WITHDRAW".equalsIgnoreCase(transaction.getType())) {
+                log.info("Starting saga for withdraw tx={}", transaction.getId());
+                sagaCoordinator.startWithdrawalSaga(transaction);
             }
         } catch (Exception e) {
             log.error("Error processing transaction message: {}", e.getMessage(), e);

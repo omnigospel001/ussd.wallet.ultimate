@@ -1,14 +1,17 @@
+
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.1
+    container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     ports:
-      - '2181:2181'
+      - "2181:2181"
 
   kafka:
     image: confluentinc/cp-kafka:7.4.1
+    container_name: kafka
     depends_on:
       - zookeeper
     environment:
@@ -18,38 +21,74 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     ports:
-      - '9092:9092'
+      - "9092:9092"
 
   mysql:
     image: mysql:8.0
+    container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: ussd_wallet_db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: rootpass
     ports:
-      - '3306:3306'
+      - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    ports:
+      - "8081:80"
+    depends_on:
+      - mysql
+
   redis:
     image: redis:7
+    container_name: redis
     ports:
-      - '6379:6379'
+      - "6379:6379"
 
   cassandra:
     image: cassandra:4.1
+    container_name: cassandra
     ports:
-      - '9042:9042'
+      - "9042:9042"
+    volumes:
+      - cassandra-data:/var/lib/cassandra
+    environment:
+      CASSANDRA_CLUSTER_NAME: my-cluster
+      CASSANDRA_DC: datacenter1
+      CASSANDRA_RACK: rack1
+    healthcheck:
+      test: ["CMD", "cqlsh", "-e", "describe cluster"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   app:
     build: .
+    container_name: app
     depends_on:
       - mysql
       - redis
       - cassandra
       - kafka
     environment:
-      - SPRING_PROFILES_ACTIVE=dev
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/ussd_wallet_db
+      SPRING_DATASOURCE_USERNAME: appuser
+      SPRING_DATASOURCE_PASSWORD: rootpass
+      SPRING_REDIS_HOST: redis
+      SPRING_CASSANDRA_CONTACT_POINTS: cassandra
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     ports:
-      - '8080:8080'
+      - "8080:8080"
 
 volumes:
   mysql-data:
+  cassandra-data:

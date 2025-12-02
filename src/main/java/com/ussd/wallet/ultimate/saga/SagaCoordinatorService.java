@@ -43,7 +43,6 @@ public class SagaCoordinatorService {
         var name = "withdraw-saga-" + transaction.getId().toString();
         var behavior = WithdrawalSaga.create(transaction, paymentService, accountService, smsService, cassandraRepo);
         try {
-            //actorSystem.spawn(behavior, name);
             actorSystem.systemActorOf(behavior, name, Props.empty());
             log.info("Spawned saga actor {}", name);
         } catch (Exception e) {

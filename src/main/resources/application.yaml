@@ -3,7 +3,7 @@ spring:
     name: ussd.wallet.ultimate
 
   datasource:
-    url: ${JDBC_DATABASE_URL:jdbc:mysql://localhost:3306/dating_db?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false}
+    url: ${JDBC_DATABASE_URL:jdbc:mysql://localhost:3306/ussd_wallet_db?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false}
     username: ${JDBC_DATABASE_USERNAME:root}
     password: ${JDBC_DATABASE_PASSWORD:rootpass}
   jpa:
@@ -35,7 +35,7 @@ ussd:
 
 twilio:
   account-sid: ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-  auth-token: your_twilio_auth_token
+  auth-token: twilio_auth_token
   from-number: +1234567890
 
 flutterwave:
@@ -43,7 +43,7 @@ flutterwave:
   secret-key: FLWSECK-xxxxxxxxxxxxxxxxxxxx
 
 currency:
-  soap-wsdl: http://currency.example/service?wsdl
+  soap-wsdl: https://currency/service?wsdl
 
 server:
   port: 8080

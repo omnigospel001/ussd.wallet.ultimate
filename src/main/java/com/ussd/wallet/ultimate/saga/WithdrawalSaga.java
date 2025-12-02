@@ -118,7 +118,7 @@ public class WithdrawalSaga extends AbstractBehavior<WithdrawalSaga.Command> {
         getContext().getExecutionContext().execute(() -> {
             try {
                 // For demo we call paymentService with placeholder account details.
-                var resp = paymentService.initiateTransfer("0000000000", "000", tx.getCurrency(), tx.getAmount().toPlainString(), "USSD withdrawal " + tx.getId());
+                var resp = paymentService.initiateTransfer("25436866857", "000", tx.getCurrency(), tx.getAmount().toPlainString(), "USSD withdrawal " + tx.getId());
                 // interpret response map for success (depends on provider)
                 boolean success = resp != null && (resp.getOrDefault("status", "success").toString().equalsIgnoreCase("success") || resp.getOrDefault("status", "ok").toString().equalsIgnoreCase("ok"));
                 String providerRef = resp != null && resp.containsKey("data") ? resp.get("data").toString() : resp != null && resp.containsKey("reference") ? resp.get("reference").toString() : "";
@@ -130,7 +130,6 @@ public class WithdrawalSaga extends AbstractBehavior<WithdrawalSaga.Command> {
     }
 
     private String findMsisdnForAccount(Long accountId) {
-        // In a real implementation you would query a user/account mapping. For demo, return placeholder.
         return "+2348164509876";
     }
 }

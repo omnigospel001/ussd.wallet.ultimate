@@ -29,7 +29,6 @@ public class RetryActor extends AbstractBehavior<String> {
 
     private Behavior<String> onMsg(String msg) {
         log.info("[AKKA] RetryActor processing: {}", msg);
-        // implement retry/backoff and compensation here if used
         return this;
     }
 }
